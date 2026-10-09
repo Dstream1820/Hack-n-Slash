@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 144">
+<defs>
+ <linearGradient id="cloth" x2="1" y2="1"><stop stop-color="#51405f"/><stop offset=".55" stop-color="#292131"/><stop offset="1" stop-color="#17131f"/></linearGradient>
+ <linearGradient id="hair" x2="1" y2="1"><stop stop-color="#302738"/><stop offset="1" stop-color="#08080d"/></linearGradient>
+</defs>
+<!-- trailing hair and hood -->
+<path d="M28 15 Q19 22 22 48 L16 82 31 72 39 43Z" fill="url(#hair)" stroke="#766180" stroke-width="1.5"/>
+<path d="M34 17 Q52 9 64 22 L69 52 57 45 53 30Z" fill="url(#hair)"/>
+<!-- hood and silver crest -->
+<path d="M29 29 Q25 8 45 5 Q66 8 66 29 L59 39 34 39Z" fill="#17131f" stroke="#806b90" stroke-width="2"/>
+<path d="M43 9 L48 2 52 10 48 17Z" fill="#d3c6dc" stroke="#8d789d" stroke-width="1"/>
+<path d="M31 25 Q45 16 62 25 L58 38 35 39Z" fill="#090a11"/>
+<!-- face -->
+<path d="M36 27 Q47 22 58 28 L56 42 47 49 37 41Z" fill="#d5b8c7"/>
+<path d="M35 28 L44 31 39 34 34 33 M49 31 L59 28 58 34 51 34" fill="#17131f"/>
+<path d="M40 39 Q47 42 54 38" fill="none" stroke="#8e657f" stroke-width="1.5"/>
+<!-- long hair over shoulder -->
+<path d="M33 19 Q24 30 31 48 L34 65 43 49 42 30Z" fill="url(#hair)"/>
+<!-- torso and ornate sleeves -->
+<path d="M38 47 L55 46 65 61 59 78 31 78 27 61Z" fill="url(#cloth)" stroke="#8a719b" stroke-width="2"/>
+<path d="M39 48 L48 56 56 47 53 72 43 72Z" fill="#18121f" stroke="#b39ac3" stroke-width="1"/>
+<path d="M30 52 L22 63 29 74 36 65Z" fill="#2d2238" stroke="#8b7099" stroke-width="2"/>
+<path d="M61 52 L71 60 64 73 57 65Z" fill="#2d2238" stroke="#8b7099" stroke-width="2"/>
+<!-- belt and jewel -->
+<path d="M31 72 L60 72 59 79 32 79Z" fill="#16111c" stroke="#a58ab5" stroke-width="1.5"/>
+<path d="M46 72 L50 76 46 80 42 76Z" fill="#a04e91" stroke="#e1c6ed" stroke-width="1"/>
+<!-- layered gothic skirt -->
+<path d="M33 78 L59 78 68 113 48 105 27 116Z" fill="#251b30" stroke="#8a709a" stroke-width="2"/>
+<path d="M34 80 L44 83 36 109 27 115Z" fill="#49304f"/>
+<path d="M51 81 L59 80 67 112 52 104Z" fill="#17121f"/>
+<path d="M42 84 L49 84 48 105 41 109Z" fill="#7d3c75"/>
+<path d="M31 91 L36 94 M59 91 L63 95" stroke="#c1a3d0" stroke-width="1.5"/>
+<!-- legs and boots -->
+<path d="M35 108 L45 108 43 129 34 132Z" fill="#17131f" stroke="#5c4969" stroke-width="1.5"/>
+<path d="M49 106 L58 109 59 129 51 132Z" fill="#17131f" stroke="#5c4969" stroke-width="1.5"/>
+<path d="M31 127 L43 127 44 136 27 137Z" fill="#0d0c13" stroke="#9b82aa" stroke-width="1.5"/>
+<path d="M51 127 L61 127 68 136 51 137Z" fill="#0d0c13" stroke="#9b82aa" stroke-width="1.5"/>
+<!-- dagger -->
+<path d="M69 61 L76 54 77 82 72 88Z" fill="#bfb3d0" stroke="#f0e5fa" stroke-width="1"/>
+<path d="M68 59 L78 65" stroke="#6d4c80" stroke-width="3"/>
+<!-- silver trim -->
+<path d="M30 62 L35 68 M61 62 L57 68 M33 80 L29 108 M59 81 L65 107" stroke="#b19ac0" stroke-width="1.5" fill="none"/>
+</svg>
