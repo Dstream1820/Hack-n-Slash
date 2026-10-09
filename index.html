@@ -12,21 +12,21 @@
 #floor{position:absolute;bottom:12%;height:5px;width:100%;background:#6f536f;box-shadow:0 8px 0 #17121f}
 #moon{position:absolute;top:11%;right:12%;width:52px;height:52px;border-radius:50%;background:#c5afcf;opacity:.6;box-shadow:0 0 32px #9b77b6}
 #hero{position:absolute;width:68px;height:102px;bottom:calc(12% + 5px);left:calc(50% - 34px);image-rendering:pixelated;transition:filter .08s;transform-origin:bottom center}
-#hero img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 4px 2px #08060c)}
-#hero.anim-idle img{animation:assassin-idle 1.8s ease-in-out infinite}
-#hero.anim-walk img{animation:assassin-walk .22s ease-in-out infinite alternate}
-#hero.anim-hit1 img{animation:slash-one .22s ease-out}
-#hero.anim-hit2 img{animation:slash-two .22s ease-out}
-#hero.anim-hit3 img{animation:slash-three .3s ease-out}
-#hero.facing-left img{transform:scaleX(-1)}
-#hero.anim-jump img{animation:assassin-jump .5s ease-out}
-@keyframes assassin-idle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.015)}}
-@keyframes assassin-walk{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-4px) rotate(3deg)}}
-@keyframes slash-one{0%{transform:translateX(0) rotate(0)}45%{transform:translateX(8px) rotate(12deg)}100%{transform:translateX(0) rotate(0)}}
-@keyframes slash-two{0%{transform:translateX(0) rotate(0)}45%{transform:translateX(12px) rotate(-14deg)}100%{transform:translateX(0) rotate(0)}}
-@keyframes slash-three{0%{transform:translateX(0) rotate(0) scale(1)}40%{transform:translateX(16px) rotate(18deg) scale(1.08)}100%{transform:translateX(0) rotate(0) scale(1)}}
+.sprite{width:100%;height:100%;background-image:url('assets/assassin-pixel-sheet.svg');background-repeat:no-repeat;background-size:500% 100%;background-position:0% 0%;image-rendering:pixelated;filter:drop-shadow(0 4px 2px #08060c)}
+#hero.anim-idle .sprite{animation:sprite-idle 1.3s steps(1,end) infinite}
+#hero.anim-walk .sprite{animation:sprite-walk .24s steps(1,end) infinite}
+#hero.anim-hit1 .sprite{animation:slash-one .22s ease-out}
+#hero.anim-hit2 .sprite{animation:slash-two .22s ease-out}
+#hero.anim-hit3 .sprite{animation:slash-three .3s ease-out}
+#hero.facing-left .sprite{transform:scaleX(-1)}
+#hero.anim-jump .sprite{animation:assassin-jump .5s ease-out}
+@keyframes sprite-idle{0%,49%{background-position:0% 0%}50%,100%{background-position:25% 0%}}
+@keyframes sprite-walk{0%,49%{background-position:50% 0%}50%,100%{background-position:75% 0%}}
+@keyframes slash-one{0%{transform:translateX(0) rotate(0);background-position:100% 0}45%{transform:translateX(8px) rotate(12deg)}100%{transform:translateX(0) rotate(0);background-position:100% 0}}
+@keyframes slash-two{0%{transform:translateX(0) rotate(0);background-position:100% 0}45%{transform:translateX(12px) rotate(-14deg)}100%{transform:translateX(0) rotate(0);background-position:100% 0}}
+@keyframes slash-three{0%{transform:translateX(0) rotate(0) scale(1);background-position:100% 0}40%{transform:translateX(16px) rotate(18deg) scale(1.08)}100%{transform:translateX(0) rotate(0) scale(1);background-position:100% 0}}
 @keyframes assassin-jump{0%,100%{transform:translateY(0)}45%{transform:translateY(-8px)}}
-#hero.attack img{filter:drop-shadow(0 0 5px #b88bd2) brightness(1.12)}
+#hero.attack .sprite{filter:drop-shadow(0 0 5px #b88bd2) brightness(1.12)}
 #hero.hit1{transform:translateX(5px)}#hero.hit2{transform:translateX(9px) scale(1.03)}#hero.hit3{transform:translateX(13px) scale(1.05)}
 #hero.jump{bottom:calc(25% + 5px)}
 #enemy{position:absolute;width:38px;height:58px;bottom:calc(12% + 5px);left:70%;background:#4b2739;border:3px solid #85516b;clip-path:polygon(25% 0,75% 0,100% 30%,85% 100%,15% 100%,0 30%)}
@@ -38,19 +38,18 @@
 #status{position:absolute;top:42px;left:12px;font-size:11px;color:#e0cce8}
 </style></head>
 <body><div id="wrap"><main id="game" aria-label="Game Hack-n-Slash prototype">
-<div id="arena"><div id="moon"></div><div id="top"><b>HACK-N-SLASH</b><span>PROTOTIPE 0.1</span></div><div id="status">HP ♥ ♥ ♥ &nbsp; | &nbsp; Combo: <span id="combo">0</span></div>
-<div id="hero"><img src="assets/assassin-gothic.svg" alt="Assassin gothic hitam ungu"></div><div id="enemy"></div><div id="floor"></div><div id="hint">Kalahkan musuh latihan untuk mencoba serangan dasar</div></div>
+<div id="arena"><div id="moon"></div><div id="top"><b>HACK-N-SLASH</b><span>PROTOTIPE 0.2</span></div><div id="status">HP ♥ ♥ ♥ &nbsp; | &nbsp; Combo: <span id="combo">0</span></div>
+<div id="hero" class="anim-idle"><div class="sprite" role="img" aria-label="Assassin pixel gothic hitam ungu"></div></div><div id="enemy"></div><div id="floor"></div><div id="hint">Kalahkan musuh latihan untuk mencoba serangan dasar</div></div>
 <div id="controls"><div class="group"><button class="ctrl" id="left">◀</button><button class="ctrl" id="right">▶</button></div><div class="group"><button class="ctrl small" id="jump">LOMPAT</button><button class="ctrl" id="attack">⚔</button></div></div>
 </main></div>
 <script>
-const hero=document.querySelector('#hero'),enemy=document.querySelector('#enemy'),game=document.querySelector('#game'),comboEl=document.querySelector('#combo');
-let x=50,jumping=false,combo=0,enemyHp=3,attackTimer=null,keys={};
+const hero=document.querySelector('#hero'),enemy=document.querySelector('#enemy'),comboEl=document.querySelector('#combo');
+let x=50,jumping=false,combo=0,enemyHp=3,attackTimer=null;
 function place(){hero.style.left='calc('+x+'% - 34px)'}
 function move(d){x=Math.max(7,Math.min(93,x+d*3.5));hero.classList.toggle('facing-left',d<0);hero.classList.remove('anim-idle');hero.classList.add('anim-walk');place();clearTimeout(hero._walkTimer);hero._walkTimer=setTimeout(()=>{hero.classList.remove('anim-walk');if(!hero.classList.contains('attack')&&!jumping)hero.classList.add('anim-idle')},260)}
 function jump(){if(jumping)return;jumping=true;hero.classList.remove('anim-idle','anim-walk');hero.classList.add('jump','anim-jump');setTimeout(()=>{hero.classList.remove('jump','anim-jump');jumping=false;if(!hero.classList.contains('attack'))hero.classList.add('anim-idle')},500)}
 function attack(){if(attackTimer)return;combo=combo%3+1;comboEl.textContent=combo;hero.classList.remove('anim-idle','anim-walk','anim-hit1','anim-hit2','anim-hit3');void hero.offsetWidth;hero.classList.add('attack','anim-hit'+combo,'hit'+combo);let hit=Math.abs(x-70)<24;if(hit){enemyHp--;enemy.style.filter='brightness(2)';setTimeout(()=>enemy.style.filter='',100);if(enemyHp<=0){enemy.classList.add('down');document.querySelector('#hint').textContent='Musuh latihan tumbang!';setTimeout(()=>{enemyHp=3;enemy.classList.remove('down');document.querySelector('#hint').textContent='Kalahkan musuh latihan untuk mencoba serangan dasar'},1800)}}attackTimer=setTimeout(()=>{hero.classList.remove('attack','hit1','hit2','hit3','anim-hit1','anim-hit2','anim-hit3');hero.classList.add('anim-idle');attackTimer=null},230)}
-[['left',()=>move(-1)],['right',()=>move(1)],['jump',jump],['attack',attack]].forEach(([id,fn])=>{const b=document.getElementById(id);b.addEventListener('pointerdown',e=>{e.preventDefault();fn()})});
+[['left',()=>move(-1)],['right',()=>move(1)],['jump',jump],['attack',attack]].forEach(([id,fn])=>{document.getElementById(id).addEventListener('pointerdown',e=>{e.preventDefault();fn()})});
 document.addEventListener('keydown',e=>{if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='a')move(-1);if(e.key==='ArrowRight'||e.key==='d')move(1);if(e.key===' '||e.key==='ArrowUp')jump();if(e.key==='j'||e.key==='Enter')attack()});
-hero.classList.add('anim-idle');
 place();
 </script></body></html>
