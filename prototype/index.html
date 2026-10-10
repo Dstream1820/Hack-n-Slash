@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Hack & Slash — Prototype</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080914;color:#eee;font-family:system-ui,sans-serif;touch-action:none}
+#game{display:block;width:100vw;height:100vh;background:#090b19}
+#hud{position:fixed;inset:12px 14px auto;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;text-shadow:0 2px 5px #000}
+.brand{font-weight:900;letter-spacing:2px;color:#e0c8ff}.stat{font-size:12px;color:#c9c6db;margin-top:5px}
+#help{position:fixed;left:50%;top:15px;transform:translateX(-50%);font-size:11px;color:#aaa8c2;text-align:center;white-space:nowrap}
+#controls{position:fixed;inset:auto 0 18px;display:flex;justify-content:space-between;align-items:end;padding:0 20px;pointer-events:none}
+.pad,.actions{display:flex;gap:9px;align-items:end;pointer-events:auto}.pad button,.actions button{border:1px solid #8f7cbd;background:#18172bbd;color:#f4eaff;border-radius:50%;width:54px;height:54px;font-size:19px;box-shadow:0 0 16px #553c8040;touch-action:none}.actions button{width:62px;height:62px}.actions .attack{background:#512d79dd;border-color:#d6a5ff}.actions .dash{width:48px;height:48px;font-size:14px}
+@media (min-width:800px){#controls{opacity:.75}.pad button{width:48px;height:48px}}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud"><div><div class="brand">HACK <span style="color:#a96cff">✦</span> SLASH</div><div class="stat">ASSASSIN · PROTOTYPE 01</div></div><div style="text-align:right"><div id="hp">HP ▰▰▰▰▰</div><div class="stat" id="score">MUSUH: 0</div></div></div>
+<div id="help">A / D atau tombol kiri-kanan · J / serang · K / dash</div>
+<div id="controls"><div class="pad"><button data-key="left">◀</button><button data-key="right">▶</button></div><div class="actions"><button class="dash" data-key="dash">DASH</button><button class="attack" data-key="attack">⚔</button></div></div>
+<script>
+(()=> {
+const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d');
+let W=0,H=0,dpr=1;function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
+const keys={left:false,right:false,attack:false,dash:false};let player={x:W*.25,y:0,vx:0,face:1,hp:5,attack:0,dash:0,inv:0};let enemies=[],kills=0,spawn=0,clock=0;
+function floorY(){return H*.79}player.y=floorY();
+function enemy(){enemies.push({x:W+40,y:floorY(),hp:2,walk:Math.random()*6,hit:0})}
+function press(k,on){keys[k]=on;if(on&&k==='attack'&&player.attack<=0)player.attack=.22;if(on&&k==='dash'&&player.dash<=0){player.dash=.18;player.inv=.24;player.vx=player.face*720}}
+document.querySelectorAll('[data-key]').forEach(b=>{let k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);press(k,true)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,e=>{e.preventDefault();if(k!=='attack'&&k!=='dash')press(k,false)}))});
+addEventListener('keydown',e=>{let map={a:'left',ArrowLeft:'left',d:'right',ArrowRight:'right',j:'attack',k:'dash',' ':'attack'};if(map[e.key]){e.preventDefault();if(!e.repeat)press(map[e.key],true)}});addEventListener('keyup',e=>{let map={a:'left',ArrowLeft:'left',d:'right',ArrowRight:'right'};if(map[e.key])press(map[e.key],false)});
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h)}
+function drawBg(){let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#101126');g.addColorStop(1,'#21172f');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ // moon
+ ctx.fillStyle='#b6a9e8';ctx.beginPath();ctx.arc(W*.78,H*.2,Math.min(W,H)*.065,0,Math.PI*2);ctx.fill();ctx.fillStyle='#101126';ctx.beginPath();ctx.arc(W*.81,H*.18,Math.min(W,H)*.06,0,Math.PI*2);ctx.fill();
+ // gothic skyline
+ for(let i=0;i<14;i++){let x=i*W/11-(clock*8% (W/11)),bw=W/15+((i*13)%17);let bh=H*(.18+((i*37)%23)/100);rect(x,floorY()-bh,bw,bh,'#17172c');rect(x+bw*.3,floorY()-bh-18,bw*.4,18,'#17172c');rect(x+bw*.43,floorY()-bh-28,3,10,'#3c2e58')}
+ rect(0,floorY(),W,H-floorY(),'#171422');rect(0,floorY(),W,4,'#78609a');for(let x=0;x<W;x+=52){rect(x,floorY()+18,1,H*.2,'#30243c')}for(let y=floorY()+30;y<H;y+=32)rect(0,y,W,1,'#30243c');
+}
+function drawAssassin(p){let x=Math.round(p.x),y=Math.round(p.y),f=p.face;ctx.save();ctx.translate(x,y);ctx.scale(f,1);let flash=p.inv>0&&Math.floor(clock*30)%2===0;
+rect(-15,-3,30,4,'#080711'); // shadow
+// cloak and legs
+rect(-10,-42,20,29,flash?'#eee4ff':'#33203f');rect(-15,-29,30,18,flash?'#eee4ff':'#21172e');rect(-13,-14,10,11,'#171321');rect(3,-14,10,11,'#171321');rect(-15,-4,13,4,'#6d5687');rect(2,-4,14,4,'#6d5687');
+// torso and arms
+rect(-9,-54,18,17,'#392448');rect(-13,-51,5,19,'#171222');rect(8,-51,5,17,'#171222');rect(-8,-49,16,4,'#76608a');rect(-4,-47,8,11,'#171222');
+// head/hair
+rect(-8,-69,16,16,'#d8b3a7');rect(-11,-71,22,9,'#100d19');rect(-12,-66,5,19,'#100d19');rect(7,-66,5,20,'#100d19');rect(-7,-60,4,2,'#211329');rect(3,-60,4,2,'#211329');rect(-8,-72,16,3,'#625071');rect(-2,-75,5,4,'#a88ac8');
+// dagger
+rect(11,-48,3,20,'#c8c4dc');rect(9,-35,8,3,'#806899');rect(12,-53,2,7,'#f1eaff');
+if(p.attack>0){ctx.globalAlpha=.75;ctx.strokeStyle='#d6a0ff';ctx.lineWidth=4;ctx.beginPath();ctx.arc(12,-45,31,-.9,.85);ctx.stroke();ctx.globalAlpha=1}
+ctx.restore()}
+function drawEnemy(e){rect(e.x-12,e.y-35,24,31,'#573a43');rect(e.x-15,e.y-15,30,12,'#30212e');rect(e.x-9,e.y-47,18,14,'#b28c8b');rect(e.x-11,e.y-49,22,5,'#19111c');rect(e.x-7,e.y-4,7,4,'#17111d');rect(e.x+3,e.y-4,7,4,'#17111d');rect(e.x-10,e.y-54,20,3,'#17111d');rect(e.x-10,e.y-54,20*(e.hp/2),3,'#ed527d')}
+let last=performance.now();function frame(now){let dt=Math.min((now-last)/1000,.033);last=now;clock+=dt;
+let speed=250;if(keys.left){player.vx=-speed;player.face=-1}else if(keys.right){player.vx=speed;player.face=1}else if(player.dash<=0)player.vx*=Math.pow(.001,dt);
+player.x+=player.vx*dt;player.x=Math.max(22,Math.min(W-22,player.x));player.y=floorY();player.attack=Math.max(0,player.attack-dt);player.dash=Math.max(0,player.dash-dt);player.inv=Math.max(0,player.inv-dt);
+spawn-=dt;if(spawn<=0&&enemies.length<5){enemy();spawn=1.7+Math.random()*1.2}
+for(let e of enemies){e.walk+=dt*5;if(e.hit>0)e.hit-=dt;let dx=player.x-e.x;if(Math.abs(dx)>34)e.x+=Math.sign(dx)*Math.min(85*dt,Math.abs(dx)-30);else if(e.hit<=0&&player.inv<=0){player.hp=Math.max(0,player.hp-1);player.inv=.8;e.hit=.8}}
+if(player.attack>0&&player.attack<.19){for(let e of enemies){if(Math.abs(e.x-player.x)<75&&e.hit<=0){e.hp--;e.hit=.35;if(e.hp<=0){kills++;e.dead=true}}}player.attack=-1}
+enemies=enemies.filter(e=>!e.dead);document.querySelector('#hp').textContent='HP '+('▰'.repeat(player.hp))+('▱'.repeat(5-player.hp));document.querySelector('#score').textContent='MUSUH: '+kills;
+drawBg();enemies.forEach(drawEnemy);drawAssassin(player);
+if(player.hp<=0){ctx.fillStyle='#080914bb';ctx.fillRect(0,0,W,H);ctx.textAlign='center';ctx.fillStyle='#f0d9ff';ctx.font='bold 28px system-ui';ctx.fillText('KAMU TUMBANG',W/2,H/2);ctx.font='14px system-ui';ctx.fillText('Muat ulang halaman untuk mencoba lagi',W/2,H/2+30)}
+requestAnimationFrame(frame)}requestAnimationFrame(frame);
+})();
+</script>
+</body></html>
